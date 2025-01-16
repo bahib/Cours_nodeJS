@@ -7,9 +7,14 @@
 </head>
 <body>
     <div style="width: 50%; margin: auto;">
+        <!-- <% const nom = "Ibrahim BAH"; %> -->
         <header>
+            <p>
+                <%= heure %>
+            </p>
             <h1>
-                NotesApp	
+                NotesApp
+                <!-- NotesApp	 : <%= nom %> -->
             </h1>
             <nav>
                 <ul>
@@ -36,6 +41,14 @@
 
         <section>
             <h2>Listes des notes</h2>
+            <ul>
+                <% for (let i = 0; i < notes.length; i++) { %>
+                    <li>
+                        <h3><%= notes[i].titre %></h3>
+                        <p><%= notes[i].contenu %></p>
+                    </li>
+                <% } %>
+            </ul>
         </section>
     </div>
 </body>
