@@ -15,13 +15,19 @@ app.set("views", __dirname + "/vues");
 //     );
 // });
 
-app.get("/", (req, res) => { 
-    const heureConnectee = Date().toString();
-    const notes = [{id: 1, titre: "Note 1", contenu: "Contenu de la note 1"}, {id: 2, titre: "Note 2", contenu: "Contenu de la note 2"},
-        {id: 3, titre: "Note 3", contenu: "Contenu de la note 3"}, {id: 4, titre: "Note 4", contenu: "Contenu de la note 4"}
-    ];   
-    
-    res.status(200).render("index", {heure: heureConnectee, notes});
+// Route pour la page d'accueil
+app.get("/", (req, res) => {
+    const heureConnectee = new Date().toLocaleTimeString(); // Heure actuelle
+    const notes = [
+        { id: 1, titre: "Note 1", contenu: "Contenu de la note 1" },
+        { id: 2, titre: "Note 2", contenu: "Contenu de la note 2" },
+        { id: 3, titre: "Note 3", contenu: "Contenu de la note 3" },
+        { id: 4, titre: "Note 4", contenu: "Contenu de la note 4" },
+    ];
+    const nom = "Ibrahim BAH"; // Ajout de la variable nom
+
+    // Rendu de la vue index avec les données
+    res.status(200).render("index", { heure: heureConnectee, notes, nom });
 });
 
 
@@ -33,6 +39,8 @@ app.get("/", (req, res) => {
 //     }
 //     );
 // });
+
+// Route pour la page À propos
 
 app.get("/apropos", (req, res) => {
     res.status(200).render("apropos");

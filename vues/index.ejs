@@ -1,46 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acueil</title>
+    <title>Accueil</title>
 </head>
 <body>
     <div style="width: 50%; margin: auto;">
-        <!-- <% const nom = "Ibrahim BAH"; %> -->
-        <header>
-            <p>
-                <%= heure %>
-            </p>
-            <h1>
-                NotesApp
-                <!-- NotesApp	 : <%= nom %> -->
-            </h1>
-            <nav>
-                <ul>
-                    <li>
-                        <a href="/">Accueil</a>
-                    </li>
-                    <li>
-                        <a href="/apropos">A propos</a>
-                    </li>
-                </ul>
-            </nav>
-        </header>
+        <%- include("./composants/header") %>
         <section>
             <form action="">
-                <label for="titre">Titre</label> <br>
+                <label for="titre">Titre</label><br>
                 <input type="text" name="titre" id="titre"><br>
-                <label for="description">Description</label> <br>
-                <textarea name="description" id="description" cols="20" rows="5"></textarea>
-                <br>
+                <label for="description">Description</label><br>
+                <textarea name="description" id="description" cols="30" rows="5"></textarea><br>
                 <input type="submit" value="Enregistrer">
             </form>
             <p>-----------------------------------------------</p>
         </section>
 
         <section>
-            <h2>Listes des notes</h2>
+            <h2>Liste des notes</h2>
             <ul>
                 <% for (let i = 0; i < notes.length; i++) { %>
                     <li>
