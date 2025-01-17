@@ -81,18 +81,40 @@ app.get("/", (req, res) => {
 // Route pour la page À propos
 
 app.post("/notes", (req, res) => {
+    let id = req.body.id === "" ? null : req.body.id;
     // console.log(req.body);
     const { titre, description } = req.body;
+
+    let reqSql = id === null ? "INSERT INTO notes (id, titre, description) VALUES (?, ?, ?)" : "UPDATE notes SET titre = ?, description = ? WHERE id = ?";
+    
+    let donnees = id === null ? [null, titre, description] : [titre, description, id];
     req.getConnection((err, connection) => {
         if (err) {
             console.log("Impossible de se connecter à la base de données !");
         } else {
-            connection.query("INSERT INTO notes (id, titre, description) VALUES (?, ?, ?)", [null, titre, description], (err, rows) => {
+            connection.query(reqSql, donnees, (err, rows) => {
                 if (err) {
                     console.log("Impossible d'ajouter la note !");
                 } else {
 
                     res.status(300).redirect("/");
+                }
+            });
+        }
+    });
+});
+
+app.delete("/notes/:id", (req, res) => {
+    const id = req.params.id;
+    req.getConnection((err, connection) => {
+        if (err) {
+            console.log("Impossible de se connecter à la base de données !");
+        } else {
+            connection.query("DELETE FROM notes WHERE id = ?", [id], (err, rows) => {
+                if (err) {
+                    console.log("Impossible de supprimer la note !");
+                } else {
+                    res.status(300).json({routeRacine: "/"});
                 }
             });
         }

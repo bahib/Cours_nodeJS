@@ -10,6 +10,7 @@
         <%- include("./composants/header") %>
         <section>
             <form action="/notes" method="POST">
+                <input type="hidden" name="id" id="id">
                 <label for="titre">Titre</label><br>
                 <input type="text" name="titre" id="titre"><br>
                 <label for="description">Description</label><br>
@@ -27,9 +28,36 @@
                         <h3><%= notes[i].titre %></h3>
                         <p><%= notes[i].description %></p>
                     </li>
+                    <input type="button" value="supprimer" onclick="viderFormulaire('<%= notes[i].id %>')">
+                    <input type="button" value="modifier" onclick="remplirFormulaire('<%= notes[i].id %>','<%= notes[i].titre %>','<%= notes[i].description %>')">>
+                    <p>-----------------------------------------------</p>
+
                 <% } %>
             </ul>
         </section>
     </div>
 </body>
+
+<script>
+    function remplirFormulaire(id, titre, description) {
+        document.getElementById("id").value = id;
+        document.getElementById("titre").value = titre;
+        document.getElementById("description").value = description;
+    }
+
+    function viderFormulaire(id) {
+        let pointFinal = "notes/" + id;
+        fetch(pointFinal, {
+            method: "DELETE"
+        }).then((response) => {
+            response.json().then((data) => {
+                    res.status(300).json({routeRacine: "/"});
+                window.location.href = data.routeRacine;
+            }).catch((err) => {
+                console.log(err);
+            });
+        });
+    }
+
+</script>
 </html>
