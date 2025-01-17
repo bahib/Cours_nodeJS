@@ -1,6 +1,7 @@
 const express = require("express");
 const mysql = require("mysql");
 const mysqlConnection = require("express-myconnection");
+const notesRoutes = require("./routes/notesRoutes");
 
 const app = express();
 
@@ -34,27 +35,6 @@ app.set("views", __dirname + "/vues");
 //     );
 // });   
 
-// Route pour la page d'accueil
-app.get("/", (req, res) => {
-    const heureConnectee = new Date().toLocaleTimeString(); // Heure actuelle
-    const nom = "Ibrahim BAH"; // Ajout de la variable nom
-
-    req.getConnection((err, connection) => {
-        if (err){
-            console.log("Impossible de se connecter à la base de données !");
-            
-        } else {
-            connection.query("SELECT * FROM notes", (err, rows) => {
-                if (err) {
-                    console.log("Impossible de récupérer les notes !");
-        
-                } else {
-                    res.status(200).render("index", {heure: heureConnectee, notes: rows, nom });
-                }
-            });
-        }
-    });
-
     
     // const notes = [
     //     { id: 1, titre: "Note 1", contenu: "Contenu de la note 1" },
@@ -66,8 +46,10 @@ app.get("/", (req, res) => {
 
     // Rendu de la vue index avec les données
     // res.status(200).render("index", { heure: heureConnectee, notes, nom });
-});
+// });
 
+// Définition des routes pour notes
+app.use("/", notesRoutes);
 
 // app.get("/apropos", (req, res) => {
 //     res.sendFile(__dirname + "/vues/apropos.html", (err) => {
@@ -80,46 +62,6 @@ app.get("/", (req, res) => {
 
 // Route pour la page À propos
 
-app.post("/notes", (req, res) => {
-    let id = req.body.id === "" ? null : req.body.id;
-    // console.log(req.body);
-    const { titre, description } = req.body;
-
-    let reqSql = id === null ? "INSERT INTO notes (id, titre, description) VALUES (?, ?, ?)" : "UPDATE notes SET titre = ?, description = ? WHERE id = ?";
-    
-    let donnees = id === null ? [null, titre, description] : [titre, description, id];
-    req.getConnection((err, connection) => {
-        if (err) {
-            console.log("Impossible de se connecter à la base de données !");
-        } else {
-            connection.query(reqSql, donnees, (err, rows) => {
-                if (err) {
-                    console.log("Impossible d'ajouter la note !");
-                } else {
-
-                    res.status(300).redirect("/");
-                }
-            });
-        }
-    });
-});
-
-app.delete("/notes/:id", (req, res) => {
-    const id = req.params.id;
-    req.getConnection((err, connection) => {
-        if (err) {
-            console.log("Impossible de se connecter à la base de données !");
-        } else {
-            connection.query("DELETE FROM notes WHERE id = ?", [id], (err, rows) => {
-                if (err) {
-                    console.log("Impossible de supprimer la note !");
-                } else {
-                    res.status(300).json({routeRacine: "/"});
-                }
-            });
-        }
-    });
-});
 
 app.get("/apropos", (req, res) => {
     res.status(200).render("apropos");
