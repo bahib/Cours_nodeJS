@@ -9,7 +9,7 @@
     <div style="width: 50%; margin: auto;">
         <%- include("./composants/header") %>
         <section>
-            <form action="">
+            <form action="/notes" method="POST">
                 <label for="titre">Titre</label><br>
                 <input type="text" name="titre" id="titre"><br>
                 <label for="description">Description</label><br>
@@ -25,7 +25,7 @@
                 <% for (let i = 0; i < notes.length; i++) { %>
                     <li>
                         <h3><%= notes[i].titre %></h3>
-                        <p><%= notes[i].contenu %></p>
+                        <p><%= notes[i].description %></p>
                     </li>
                 <% } %>
             </ul>

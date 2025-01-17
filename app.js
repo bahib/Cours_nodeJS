@@ -1,5 +1,24 @@
 const express = require("express");
+const mysql = require("mysql");
+const mysqlConnection = require("express-myconnection");
+
 const app = express();
+
+// Middleware pour le traitement des données POST
+app.use(express.urlencoded({ extended: false }));
+
+// Connexion à la base de données
+const dbOptions = {
+    host: "localhost",
+    user: "root",
+    port: 3306,
+    password: "",
+    database: "nodes_bd",
+};
+
+// Définition du middleware pour la connexion à la base de données
+app.use(mysqlConnection(mysql, dbOptions, "pool"));
+
 
 // Definition du moteur d'affichage
 app.set("view engine", "ejs");
@@ -13,21 +32,40 @@ app.set("views", __dirname + "/vues");
 //         }
 //     }
 //     );
-// });
+// });   
 
 // Route pour la page d'accueil
 app.get("/", (req, res) => {
     const heureConnectee = new Date().toLocaleTimeString(); // Heure actuelle
-    const notes = [
-        { id: 1, titre: "Note 1", contenu: "Contenu de la note 1" },
-        { id: 2, titre: "Note 2", contenu: "Contenu de la note 2" },
-        { id: 3, titre: "Note 3", contenu: "Contenu de la note 3" },
-        { id: 4, titre: "Note 4", contenu: "Contenu de la note 4" },
-    ];
     const nom = "Ibrahim BAH"; // Ajout de la variable nom
 
+    req.getConnection((err, connection) => {
+        if (err){
+            console.log("Impossible de se connecter à la base de données !");
+            
+        } else {
+            connection.query("SELECT * FROM notes", (err, rows) => {
+                if (err) {
+                    console.log("Impossible de récupérer les notes !");
+        
+                } else {
+                    res.status(200).render("index", {heure: heureConnectee, notes: rows, nom });
+                }
+            });
+        }
+    });
+
+    
+    // const notes = [
+    //     { id: 1, titre: "Note 1", contenu: "Contenu de la note 1" },
+    //     { id: 2, titre: "Note 2", contenu: "Contenu de la note 2" },
+    //     { id: 3, titre: "Note 3", contenu: "Contenu de la note 3" },
+    //     { id: 4, titre: "Note 4", contenu: "Contenu de la note 4" },
+    // ];
+    
+
     // Rendu de la vue index avec les données
-    res.status(200).render("index", { heure: heureConnectee, notes, nom });
+    // res.status(200).render("index", { heure: heureConnectee, notes, nom });
 });
 
 
@@ -41,6 +79,25 @@ app.get("/", (req, res) => {
 // });
 
 // Route pour la page À propos
+
+app.post("/notes", (req, res) => {
+    // console.log(req.body);
+    const { titre, description } = req.body;
+    req.getConnection((err, connection) => {
+        if (err) {
+            console.log("Impossible de se connecter à la base de données !");
+        } else {
+            connection.query("INSERT INTO notes (id, titre, description) VALUES (?, ?, ?)", [null, titre, description], (err, rows) => {
+                if (err) {
+                    console.log("Impossible d'ajouter la note !");
+                } else {
+
+                    res.status(300).redirect("/");
+                }
+            });
+        }
+    });
+});
 
 app.get("/apropos", (req, res) => {
     res.status(200).render("apropos");
